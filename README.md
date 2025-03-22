@@ -16,7 +16,7 @@ Please create a list of 100 short English phrases such that they have good
 distribution of all phonemes and their allophones, try to keep the length of 
 each phrase less than 140. Please make sure none of the words in the list are 
 repeated more than thrice. All the phrases don't need to be a valid sentence 
-either, the important task is to maintain cover all phonemes and maintain a 
+either, the important task is to ensure coverage over all phonemes and maintain a 
 good distribution of allophones. Please don't add numbering at the beginning of 
 the list.
 ```
