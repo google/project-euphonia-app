@@ -20,10 +20,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:record/record.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
+import '../repos/settings_repository.dart';
 import 'transcribe_mode_view.dart';
 
 class TranscribeModeController extends StatefulWidget {
@@ -43,20 +44,10 @@ class _TranscribeModeControllerState extends State<TranscribeModeController> {
   var _isPlaying = false;
   var _canPlay = false;
   var _uploadStatus = UploadStatus.notStarted;
-  var transcriptURL = '';
-  static const _transcribeURLKey = 'TRANSCRIBE_URL_KEY';
 
   @override
   void initState() {
     super.initState();
-    _populateState();
-  }
-
-  void _populateState() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      transcriptURL = prefs.getString(_transcribeURLKey) ?? '';
-    });
   }
 
   void _manageRecording() async {
@@ -111,7 +102,13 @@ class _TranscribeModeControllerState extends State<TranscribeModeController> {
       _uploadStatus = UploadStatus.started;
     });
     try {
-      final uri = Uri.parse('$transcriptURL/transcribe');
+      var transcribeEndpoint =
+          Provider.of<SettingsRepository>(context, listen: false)
+              .transcribeEndpoint;
+      if (transcribeEndpoint.isEmpty) {
+        return;
+      }
+      final uri = Uri.parse('$transcribeEndpoint/transcribe');
       var request = http.MultipartRequest('POST', uri);
       request.files.add(
         await http.MultipartFile.fromPath('wav', audioFile.path),
@@ -177,15 +174,16 @@ class _TranscribeModeControllerState extends State<TranscribeModeController> {
 
   @override
   Widget build(BuildContext context) {
-    return TranscribeModeView(
-      phrase: _phrase,
-      transcriptUrl: transcriptURL,
-      record: _isPlaying ? null : _manageRecording,
-      isRecording: _isRecording,
-      play: _canPlay && !_isRecording ? _playRecording : null,
-      isPlaying: _isPlaying,
-      isRecorded: _canPlay,
-      uploadStatus: _uploadStatus,
-    );
+    return Consumer<SettingsRepository>(
+        builder: (context, settings, _) => TranscribeModeView(
+              phrase: _phrase,
+              transcriptUrl: settings.transcribeEndpoint,
+              record: _isPlaying ? null : _manageRecording,
+              isRecording: _isRecording,
+              play: _canPlay && !_isRecording ? _playRecording : null,
+              isPlaying: _isPlaying,
+              isRecorded: _canPlay,
+              uploadStatus: _uploadStatus,
+            ));
   }
 }

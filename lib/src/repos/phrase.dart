@@ -33,7 +33,7 @@ final class Phrase {
 
   Future<String> get localTempPath => getApplicationDocumentsDirectory().then(
         (value) => '${value.path}/prompt_temp_$index.wav',
-  );
+      );
 
   Future<void> downloadRecording() async {
     final storageRef = FirebaseStorage.instance.ref();
