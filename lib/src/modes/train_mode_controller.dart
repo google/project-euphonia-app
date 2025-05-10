@@ -19,6 +19,7 @@ import '../repos/audio_player.dart';
 import '../repos/audio_recorder.dart';
 import '../repos/phrase.dart';
 import '../repos/phrases_repository.dart';
+import '../repos/settings_repository.dart';
 import '../repos/uploader.dart';
 import 'train_mode_view.dart';
 import 'upload_status.dart';
@@ -72,7 +73,8 @@ class _TrainModeControllerState extends State<TrainModeController> {
     });
   }
 
-  void _stopRecordingAndUpload(AudioRecorder recorder, Phrase phrase) async {
+  void _stopRecordingAndUpload(
+      AudioRecorder recorder, Phrase phrase, AudioPlayer player) async {
     if (!recorder.isRecording) {
       recorder.start();
       return;
@@ -80,13 +82,15 @@ class _TrainModeControllerState extends State<TrainModeController> {
     await recorder.stop();
     Provider.of<Uploader>(context, listen: false)
         .updateStatus(status: UploadStatus.started);
-    try {
-      await phrase.uploadRecording();
+    phrase.uploadRecording().then((_) {
       Provider.of<Uploader>(context, listen: false)
           .updateStatus(status: UploadStatus.completed);
-    } catch (_) {
+    }, onError: (_) {
       Provider.of<Uploader>(context, listen: false)
           .updateStatus(status: UploadStatus.interrupted);
+    });
+    if (Provider.of<SettingsRepository>(context, listen: false).autoAdvance) {
+      _nextPhrase();
     }
   }
 
@@ -108,7 +112,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
         record: player.isPlaying
             ? null
             : () {
-                _stopRecordingAndUpload(recorder, repo.currentPhrase!);
+                _stopRecordingAndUpload(recorder, repo.currentPhrase!, player);
               },
         isRecording: recorder.isRecording,
         play: player.canPlay && !recorder.isRecording

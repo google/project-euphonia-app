@@ -21,6 +21,7 @@ import 'src/project_euphonia.dart';
 import 'src/repos/audio_player.dart';
 import 'src/repos/audio_recorder.dart';
 import 'src/repos/phrases_repository.dart';
+import 'src/repos/settings_repository.dart';
 import 'src/repos/uploader.dart';
 
 void main() async {
@@ -39,5 +40,6 @@ void main() async {
         update: (context, phraseRepoChangeNotifier, audioPlayer) =>
             audioPlayer!..loadPhrase(phraseRepoChangeNotifier.currentPhrase)),
     ChangeNotifierProvider(create: (context) => Uploader()),
+    ChangeNotifierProvider(create: (context) => SettingsRepository()),
   ], child: const ProjectEuphonia()));
 }

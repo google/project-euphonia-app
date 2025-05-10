@@ -13,9 +13,9 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
-import '../generated/l10n/app_localizations.dart';
+import '../repos/settings_repository.dart';
 import 'settings_view.dart';
 
 final class SettingsController extends StatefulWidget {
@@ -26,37 +26,26 @@ final class SettingsController extends StatefulWidget {
 }
 
 class _SettingsControllerState extends State<SettingsController> {
-  late SharedPreferences _preferences;
-  String transcriptURL = '';
-  static const _transcribeURLKey = 'TRANSCRIBE_URL_KEY';
+  final TextEditingController controller = TextEditingController();
 
   @override
   void initState() {
-    super.initState();
-    _initPreferences();
-  }
-
-  void _initPreferences() async {
-    _preferences = await SharedPreferences.getInstance();
-    final url = _preferences.getString(_transcribeURLKey) ?? '';
+    final endpoint = Provider.of<SettingsRepository>(context, listen: false)
+        .transcribeEndpoint;
     setState(() {
-      transcriptURL = url;
+      controller.text = endpoint;
     });
-  }
-
-  void saveTranscribeURL(String url) async {
-    await _preferences.setString(_transcribeURLKey, url);
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(context)!.valueSavedMessage)));
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SettingsView(
-      defaultTranscriptURL: transcriptURL,
-      saveTranscript: saveTranscribeURL,
-    );
+    return Consumer<SettingsRepository>(builder: (context, settings, _) {
+      return SettingsView(
+        transcriptionURLController: controller,
+        defaultTranscriptURL: settings.transcribeEndpoint,
+        settings: settings,
+      );
+    });
   }
 }

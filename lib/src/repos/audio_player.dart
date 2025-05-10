@@ -61,12 +61,12 @@ final class AudioPlayer extends ChangeNotifier {
     });
   }
 
-  void play() {
+  Future<void> play() async {
     _isPlaying = true;
     if (_playerController == null) {
       _updatePath();
     }
-    _playerController?.play();
+    await _playerController?.play();
     notifyListeners();
   }
 

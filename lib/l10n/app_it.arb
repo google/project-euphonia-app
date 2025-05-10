@@ -18,5 +18,7 @@
     "nextPhraseButton": "Frase successiva",
     "previousPhraseButtonHint": "Tocca due volte per passare alla frase precedente",
     "playPhraseButtonHint": "Tocca due volte per riprodurre la registrazione",
-    "nextPhraseButtonHint": "Tocca due volte per passare alla frase successiva"
+    "nextPhraseButtonHint": "Tocca due volte per passare alla frase successiva",
+    "autoAdvanceSettingTitle": "Avanzamento automatico",
+    "autoAdvanceSettingSubtitle": "Passa alla frase successiva automaticamente dopo aver terminato la registrazione della frase corrente"
 }

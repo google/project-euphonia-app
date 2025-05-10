@@ -19,6 +19,7 @@ import 'generated/l10n/app_localizations.dart';
 import 'modes/train_mode_controller.dart';
 import 'modes/transcribe_mode_controller.dart';
 import 'repos/phrases_repository.dart';
+import 'repos/settings_repository.dart';
 import 'repos/uploader.dart';
 import 'settings/settings_controller.dart';
 
@@ -46,6 +47,8 @@ class _HomeControllerState extends State<HomeController> {
   @override
   void initState() {
     Provider.of<PhrasesRepository>(context, listen: false).initFromAssetFile();
+    Provider.of<SettingsRepository>(context, listen: false)
+        .initFromPreferences();
     super.initState();
   }
 

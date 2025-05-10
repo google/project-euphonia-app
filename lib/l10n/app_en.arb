@@ -103,5 +103,15 @@
     "nextPhraseButtonHint": "Double tap to jump to next phrase",
     "@nextPhraseButtonHint": {
         "description": "Accessibility action hint for next phrase button"
+    },
+
+    "autoAdvanceSettingTitle": "Auto advance",
+    "@autoAdvanceSettingTitle": {
+        "description": "Title for setting to auto advance phrase to next once current phrase is recorded"
+    },
+
+    "autoAdvanceSettingSubtitle": "Move to next phrase automatically after you finish recording the current phrase",
+    "@autoAdvanceSettingSubtitle": {
+        "description": "Subtitle to auto advance phrase setting"
     }
 }
